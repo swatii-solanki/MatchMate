@@ -47,19 +47,20 @@ class MatchAdapter(val listener: MatchClickListener) :
                 .into(ivUser)
 
             if (user.isAccepted) {
-                btnAccept.isEnabled = false
+                tvAccepted.visibility = View.VISIBLE
+                tvDeclined.visibility = View.GONE
+                btnAccept.visibility = View.GONE
+                btnDecline.visibility = View.GONE
+            } else if (user.isDeclined) {
+                tvDeclined.visibility = View.VISIBLE
+                tvAccepted.visibility = View.GONE
+                btnAccept.visibility = View.GONE
                 btnDecline.visibility = View.GONE
             } else {
-                btnAccept.isEnabled = true
-                btnDecline.visibility = View.VISIBLE
-            }
-
-            if (user.isDeclined) {
-                btnAccept.visibility = View.GONE
-                btnDecline.isEnabled = false
-            } else {
+                tvAccepted.visibility = View.GONE
+                tvDeclined.visibility = View.GONE
                 btnAccept.visibility = View.VISIBLE
-                btnDecline.isEnabled = true
+                btnDecline.visibility = View.VISIBLE
             }
 
             btnAccept.setOnClickListener {

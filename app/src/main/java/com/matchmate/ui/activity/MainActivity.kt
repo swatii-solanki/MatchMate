@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), MatchAdapter.MatchClickListener {
         lifecycleScope.launch {
             viewModel.loading.collectLatest { isLoading ->
                 binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-                binding.rvMatches.visibility = if (isLoading) View.GONE else View.VISIBLE
+                binding.layoutContent.visibility = if (isLoading) View.GONE else View.VISIBLE
             }
         }
 

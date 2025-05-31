@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">MatchMate</string>
     <string name="something_went_wrong">No Data, Something went wrong. Please try again later.</string>
+    <string name="get_your_connection">Get Your Connection!</string>
+    <string name="halo">Halo User,</string>
+    <string name="accepted">Accepted 💛️</string>
+    <string name="declined">Declined 💔</string>
+    <string name="decline">Decline</string>
+    <string name="accept">Accept</string>
 </resources>
