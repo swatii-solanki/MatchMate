@@ -5,7 +5,9 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.matchmate.R
 import com.matchmate.data.model.User
@@ -37,15 +39,19 @@ class MainActivity : AppCompatActivity(), MatchAdapter.MatchClickListener {
 
     private fun observeData() {
         lifecycleScope.launch {
-            viewModel.loading.collectLatest { isLoading ->
-                binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-                binding.layoutContent.visibility = if (isLoading) View.GONE else View.VISIBLE
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.loading.collectLatest { isLoading ->
+                    binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+                    binding.layoutContent.visibility = if (isLoading) View.GONE else View.VISIBLE
+                }
             }
         }
 
         lifecycleScope.launch {
-            viewModel.localUsers.collectLatest { users ->
-                adapter.setUsers(users)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.localUsers.collectLatest { users ->
+                    adapter.setUsers(users)
+                }
             }
         }
     }

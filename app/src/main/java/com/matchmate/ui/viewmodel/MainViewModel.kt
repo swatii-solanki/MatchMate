@@ -33,13 +33,6 @@ class MainViewModel @Inject constructor(private val repository: UserListRepo) : 
 
     fun fetchUsers() {
         viewModelScope.launch {
-            repository.getLocalUsers().collectLatest { users ->
-                _loading.value = false
-                _localUsers.value = users
-            }
-        }
-
-        viewModelScope.launch {
             repository.getNetworkUsers(10).collectLatest { resource ->
                 when (resource) {
                     is Resource.Loading -> {
@@ -49,12 +42,23 @@ class MainViewModel @Inject constructor(private val repository: UserListRepo) : 
                     is Resource.Success -> {
                         _loading.value = false
                         _localUsers.value = resource.value
+                        loadLocalUser()
                     }
 
                     is Resource.Failure -> {
                         _loading.value = false
+                        loadLocalUser()
                     }
                 }
+            }
+        }
+    }
+
+    fun loadLocalUser() {
+        viewModelScope.launch {
+            repository.getLocalUsers().collectLatest { users ->
+                _loading.value = false
+                _localUsers.value = users
             }
         }
     }
