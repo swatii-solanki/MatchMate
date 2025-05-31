@@ -25,3 +25,10 @@ The app has the following packages:
 - adapter: Contains adapter classes for RecyclerView .
 
 
+## Screens
+
+ <img src="https://github.com/swatii-solanki/MatchMate/blob/main/ScreenShots/Screenshot_20250531_162937.png" width="300" height="600"> 
+ <img src="https://github.com/swatii-solanki/MatchMate/blob/main/ScreenShots/Screenshot_20250531_162950.png" width="300" height="600">  
+ <img src="https://github.com/swatii-solanki/MatchMate/blob/main/ScreenShots/Screen_recording_MatchMate.mp4" width="300" height="600">
+
+
