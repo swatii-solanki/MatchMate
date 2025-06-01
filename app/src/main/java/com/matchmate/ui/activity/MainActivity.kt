@@ -2,6 +2,7 @@ package com.matchmate.ui.activity
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -40,17 +41,23 @@ class MainActivity : AppCompatActivity(), MatchAdapter.MatchClickListener {
     private fun observeData() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.loading.collectLatest { isLoading ->
-                    binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-                    binding.layoutContent.visibility = if (isLoading) View.GONE else View.VISIBLE
-                }
-            }
-        }
+                viewModel.users.collectLatest { resource ->
+                    when (resource) {
+                        is Resource.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                            binding.layoutContent.visibility = View.GONE
+                        }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.localUsers.collectLatest { users ->
-                    adapter.setUsers(users)
+                        is Resource.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            binding.layoutContent.visibility = View.VISIBLE
+                            adapter.setUsers(resource.value)
+                        }
+
+                        is Resource.Failure -> {
+                            Toast.makeText(this@MainActivity, resource.errorMsg, Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             }
         }

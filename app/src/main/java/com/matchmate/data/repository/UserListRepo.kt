@@ -6,9 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserListRepo {
 
-    suspend fun getNetworkUsers(results: Int): Flow<Resource<List<User>>>
-
-    fun getLocalUsers(): Flow<List<User>>
+    suspend fun getUsers(results: Int): Flow<Resource<List<User>>>
 
     suspend fun acceptUser(emailId: String) : User?
 

@@ -15,7 +15,7 @@ interface UserDao {
     suspend fun insertAll(users: List<User>)
 
     @Query("SELECT * FROM users")
-    fun getAllUsersFlow(): Flow<List<User>>
+    fun getAllUsers(): Flow<List<User>>
 
     @Query("SELECT * FROM users WHERE email = :emailId")
     suspend fun getUserById(emailId: String): User?

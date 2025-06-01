@@ -6,8 +6,10 @@ import com.matchmate.data.network.ApiService
 import com.matchmate.data.network.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class UserListRepoImpl @Inject constructor(
@@ -15,7 +17,7 @@ class UserListRepoImpl @Inject constructor(
     private val userDao: UserDao
 ) : UserListRepo {
 
-    override suspend fun getNetworkUsers(results: Int): Flow<Resource<List<User>>> = flow {
+    override suspend fun getUsers(results: Int): Flow<Resource<List<User>>> = flow {
         emit(Resource.Loading)
         try {
             val response = apiService.getUsers(results)
@@ -24,18 +26,14 @@ class UserListRepoImpl @Inject constructor(
 
             userDao.insertAll(response.results)
 
-            emit(Resource.Success(response.results))
+            emitAll(userDao.getAllUsers().map { Resource.Success(it) })
         } catch (e: Exception) {
 
             emit(Resource.Failure(e.message))
 
-            getLocalUsers()
+            emitAll(userDao.getAllUsers().map { Resource.Success(it) })
         }
     }.flowOn(Dispatchers.IO)
-
-    override fun getLocalUsers(): Flow<List<User>> {
-        return userDao.getAllUsersFlow().flowOn(Dispatchers.IO)
-    }
 
     override suspend fun acceptUser(emailId: String): User? {
         val user = userDao.getUserById(emailId)

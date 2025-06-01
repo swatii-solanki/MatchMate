@@ -21,11 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: UserListRepo) : ViewModel() {
 
-    private val _loading = MutableStateFlow(false)
-    val loading: StateFlow<Boolean> = _loading
-
-    private val _localUsers = MutableStateFlow<List<User>>(emptyList())
-    val localUsers: Flow<List<User>> = _localUsers
+    private val _users = MutableStateFlow<Resource<List<User>>>(Resource.Loading)
+    val users: StateFlow<Resource<List<User>>> = _users
 
     init {
         fetchUsers()
@@ -33,32 +30,8 @@ class MainViewModel @Inject constructor(private val repository: UserListRepo) : 
 
     fun fetchUsers() {
         viewModelScope.launch {
-            repository.getNetworkUsers(10).collectLatest { resource ->
-                when (resource) {
-                    is Resource.Loading -> {
-                        _loading.value = true
-                    }
-
-                    is Resource.Success -> {
-                        _loading.value = false
-                        _localUsers.value = resource.value
-                        loadLocalUser()
-                    }
-
-                    is Resource.Failure -> {
-                        _loading.value = false
-                        loadLocalUser()
-                    }
-                }
-            }
-        }
-    }
-
-    fun loadLocalUser() {
-        viewModelScope.launch {
-            repository.getLocalUsers().collectLatest { users ->
-                _loading.value = false
-                _localUsers.value = users
+            repository.getUsers(10).collectLatest { resource ->
+                _users.value = resource
             }
         }
     }
